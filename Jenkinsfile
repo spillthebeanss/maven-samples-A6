@@ -20,16 +20,13 @@ pipeline {
     stage('Locate Bug Commit') {
             steps {
                 script {
-                    // Write a batch file for git bisect to use
-                    writeFile file: 'runTests.bat', text: '@echo off\nmvn clean test\nif errorlevel 1 exit 1\nexit 0'
-
                     // Bisect process script
                     bat '''
                       git bisect start
                       git bisect good %GOOD_COMMIT%
                       git bisect bad %BAD_COMMIT%
                       
-                      git bisect run cmd /c runTests.bat
+                      git bisect run cmd /c 'mvn clean test'
                     '''
                 }
             }
@@ -41,7 +38,6 @@ pipeline {
           script {
               // Cleanup: make sure to end the bisect session after the job, even if it fails
               bat 'git bisect reset'
-              bat 'del runTests.bat'
           }
       }
   }
