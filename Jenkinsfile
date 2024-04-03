@@ -20,32 +20,31 @@ pipeline {
     stage('Start Bisecting') {
       steps {
         script {
-                    // Using git bisect with a direct command
-                    bat """
-                      git bisect start
-                      git bisect good %GOOD_COMMIT%
-                      git bisect bad %BAD_COMMIT%
-                    """
-          }
+          // Using git bisect with a direct command
+          bat """
+            git bisect start
+            git bisect good %GOOD_COMMIT%
+            git bisect bad %BAD_COMMIT%
+          """
+        }
       }
     }
 
     stage('Locate Bug Commit') {
-        steps {
-            script {
-                bat 'git bisect run powershell -Command "mvn clean test"'
-            }
+      steps {
+        script {
+            bat 'git bisect run powershell -Command "mvn clean test"'
         }
+      }
     }
-    
   }
   post {
-      always {
-          script {
-              // Cleanup: make sure to end the bisect session after the job, even if it fails
-              bat 'git bisect reset'
-          }
+    always {
+      script {
+          // Cleanup: make sure to end the bisect session after the job, even if it fails
+          bat 'git bisect reset'
       }
+    }
   }
 }
 
