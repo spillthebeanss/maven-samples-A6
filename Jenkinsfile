@@ -26,7 +26,7 @@ pipeline {
                       git bisect good %GOOD_COMMIT%
                       git bisect bad %BAD_COMMIT%
                       
-                      git bisect run bat "cmd /c mvn clean test"
+                      git bisect run bat 'mvn clean test'
                     '''
                 }
             }
