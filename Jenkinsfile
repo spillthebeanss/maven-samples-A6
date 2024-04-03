@@ -28,15 +28,7 @@ pipeline {
     stage('Locate Bug Commit') {
             steps {
                 script {
-                    def runTest = {
-                      try {
-                        bat 'mvn clean test'
-                        return true
-                      } catch (any) {
-                        return false
-                      }
-                    }
-                    bat 'git bisect run powershell -Command "if(runTest) { exit 0 } else { exit 1 }"'
+                    bat 'git bisect run powershell -Command "mvn clean test"'
                 }
             }
         }
