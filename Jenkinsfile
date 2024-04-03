@@ -21,8 +21,8 @@ pipeline {
                 // Bisect process script
                 bat '''
                 git bisect start
-                git bisect bad $BAD_COMMIT
-                git bisect good $GOOD_COMMIT
+                git bisect bad ${BAD_COMMIT}
+                git bisect good ${GOOD_COMMIT}
                 
                 git bisect run bat -c 'mvn clean test'
                 '''
