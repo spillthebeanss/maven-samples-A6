@@ -4,6 +4,12 @@ pipeline {
       maven 'DHT_MVN' 
       jdk 'DHT_SENSE' 
   }
+  environment {
+      // Define environment variables for Jenkins to use in the pipeline
+      // Initialize environment variables for the known good and bad commits
+      GOOD_COMMIT = '98ac319c0cff47b4d39a1a7b61b4e195cfa231e5'
+      BAD_COMMIT = '198644632661c67b6c32f59e9047c11a70685e15'
+  }
   stages {
     stage('checkout') {
       steps {
@@ -11,18 +17,14 @@ pipeline {
       }
     }
 
-    stage('Find Bug-Introducing Commit') {
+    stage('Locate Bug Commit') {
         steps {
             script {
-                // Initialize environment variables for the known good and bad commits
-                env.GOOD_COMMIT = '98ac319c0cff47b4d39a1a7b61b4e195cfa231e5'
-                env.BAD_COMMIT = '198644632661c67b6c32f59e9047c11a70685e15'
-
                 // Bisect process script
                 bat '''
                 git bisect start
-                git bisect bad ${BAD_COMMIT}
-                git bisect good ${GOOD_COMMIT}
+                git bisect bad %BAD_COMMIT%
+                git bisect good %GOOD_COMMIT%
                 
                 git bisect run bat -c 'mvn clean test'
                 '''
